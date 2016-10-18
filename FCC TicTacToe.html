@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FCC Tic-Tac-Toe</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet">
+</head>
+<body>
+<script type="text/javascript" src="script.js"></script>
+
+<h1>Tic-Tac-Toe</h1>
+
+<div class="table" id="stats">
+	<div class="row">
+		<div class="cell" id="symbolP1">X</div>
+		<div class="cell" id="player">PLAYER 1</div>
+		<div class="cell" id="scoreP1">0</div>
+		<div class="cell" id="stat-space"></div>
+		<div class="cell" id="scoreP2">0</div>
+		<div class="cell" id="player">PLAYER 2</div>
+		<div class="cell" id="symbolP2">O</div>
+	</div>
+</div>
+
+<div class="table" id="board">
+	<div class="row">
+		<div class="square1"></div>
+		<div class="square2"></div>
+		<div class="square3"></div>
+	</div>
+	<div class="row">
+		<div class="square4"></div>
+		<div class="square5"></div>
+		<div class="square6"></div>
+	</div>
+	<div class="row">
+		<div class="square7"></div>
+		<div class="square8"></div>
+		<div class="square9"></div>
+	</div>
+</div>
+<!--
+<div class="popup" id="gameModal">
+
+	<p id="p1">Game type</p>
+	<span>
+		<button class="btn1">1 Player</button><button class="btn2">2 Players</button>
+	</span>
+	
+	<p id="p2">Select Player 1</p>
+	<span class="marks">
+		<button class="btn1">X</button><button class="btn2">O</button>
+	</span>
+	<p id="p3">(X starts first)</p>
+
+	<button>START!</button>
+</div>
+-->
+<div class="popup" id="gameModal">
+
+	<p id="p1">Game type</p>
+	<div class="switchGame">
+		<form>
+			<input type="radio" class="switch-input" name="game" value="1player" id="1player" checked>
+		  <label for="1player" class="switch-label switch-label-off">1 PLAYER</label>
+		  <input type="radio" class="switch-input" name="game" value="2players" id="2players">
+		  <label for="2players" class="switch-label switch-label-on">2 PLAYERS</label>
+		  <span class="switch-selection"></span>
+		</form>
+	</div>
+	
+	<p id="p2">Select Player 1</p>
+	<form>
+		<div class="switchSymbol">
+		  <input type="radio" class="switch-input" name="symbol" value="cross" id="selCross" checked>
+		  <label for="selCross" class="switch-label switch-label-off">X</label>
+		  <input type="radio" class="switch-input" name="symbol" value="square" id="selSquare">
+		  <label for="selSquare" class="switch-label switch-label-on">O</label>
+		  <span class="switch-selection"></span>
+		</div>
+	</form>
+	<p id="p3">(X starts first)</p>
+
+	<button onclick="start()">START!</button>
+</div>
+
+<!-- Trigger/Open The Modal -->
+<button id="myBtn">Open Modal</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+	  <div class="modal-header">
+	  	<div class="close">x</div>
+	  </div>
+	  <div class="modal-body">
+	  	<p>Some text in the Modal..</p>
+	  </div>
+	  <div class="modal-footer">
+	  	<button class="btnPlayAgain">Play again</button>
+			<button class="btnReset" type="button" onclick="newGame()">RESET</button>
+	  </div>
+  </div>
+
+</div>
+
+</body>
+</html>
