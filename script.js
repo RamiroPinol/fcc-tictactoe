@@ -1,14 +1,19 @@
 var TicTacToe = {
-	board: [[0,0,0], [0,0,0], [0,0,0]],
+	board: [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ],
+	firstPlayer: 1,
 	currentPlayer: 1,
 	moves: 0,
 	pointsX: 0,
 	pointsO: 0,
-	end: false,
+	winner: undefined,
 
 	//Changes player's turn
-	changeTurn: function(currentPlayer) {
-		this.currentPlayer == 1 ? this.currentPlayer = 2 : this.currentPlayer = 1;
+	changeTurn: function(player) {
+		if (player == "current") {
+			this.currentPlayer == 1 ? this.currentPlayer = 2 : this.currentPlayer = 1;
+		} else if (player == "first") {
+			this.firstPlayer == 1 ? this.firstPlayer = 2 : this.firstPlayer = 1;
+		}
 	},
 
 	//Place player's move on board and changes turn
@@ -17,7 +22,7 @@ var TicTacToe = {
 		if (self.board[row][col] == 0) {
 			self.board[row][col] = self.currentPlayer;
 		}
-		self.changeTurn();
+		self.changeTurn("current");
 		self.checkGame(self.board);
 
 		// Debug
@@ -29,21 +34,15 @@ var TicTacToe = {
 		console.log("Player: ", this.currentPlayer, "Moves: ", this.moves);
 	},
 
-	clear: function() {
+	playAgain: function() {
 		this.board = [[0,0,0], [0,0,0], [0,0,0]];
-		this.currentPlayer = 1;
+		this.changeTurn("first");
+		this.currentPlayer = this.firstPlayer;
 		this.moves = 0;
 		this.end = false;
 	},
 
-	resetGame: function() {
-		this.clear();
-		this.pointsX = 0;
-		this.pointsO = 0;
-	},
-
 	// Checks if a player as won the game
-
 	checkGame: function(board) {
 		var self = this;
 
@@ -52,26 +51,22 @@ var TicTacToe = {
 			var equal = board[i][0] == board[i][1] && board[i][1] == board[i][2];
 
 			if (equal && board[i].indexOf(1) != -1) {
-    		this.end = true;
-    		return self.endGame("X");
+    		return this.winner = 1;
 
     	} else if (equal && board[i].indexOf(2) != -1) {
-    		this.end = true;
-      	return self.endGame("O");
+    		return this.winner = 2;
 	    }
 		}
 
 	  // Check for tic-tac-toe on column
-	  for (var i = 0; i < 3; i++) {
+	  for (var i = 0; i < board.length; i++) {
 
 	    if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
 	      if (board[0][i] == 1) {
-	      	this.end = true;
-	        return self.endGame("X");
+	      	return this.winner = 1;
 
 	      } else if (board[0][i] == 2) {
-	      	this.end = true;
-	        return self.endGame("O");
+	      	return this.winner = 2;
 	      }
 	    }
 	  }
@@ -81,57 +76,57 @@ var TicTacToe = {
 	      board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
 
 	    if (board[1][1] == 1) {
-	    	this.end = true;
-	        return self.endGame("X");
+	    	return this.winner = 1;
 
 	      } else if (board[1][1] == 2) {
-	      	this.end = true;
-	        return self.endGame("O");
+	      	return this.winner = 2;
 	      }
 	  }
 
 	  this.moves += 1;
 
-	  if (this.moves == 9 && this.end == false) {
-			return this.endGame("T");
+	  if (this.moves == 9 && this.winner == undefined) {
+			return this.winner = 0;
 		}
-	}, 
-
-	endGame: function(symbol) {
-	  if(symbol == "X") {
-	  	this.pointsX += 1;
-	  	$("#finishText").html("X Wins!");
-
-	  } else if (symbol == "O") {
-	  	this.pointsO += 1;
-	    $("#finishText").html("O Wins!");
-
-	  } else if (symbol == "T"){
-	    $("#finishText").html("It's a tie...");
-	  }
-	  $("#finishModal").css("display", "block");
 	}
 }
+
+var game;
 
 $(document).ready(function($) {
 
 	// When user clicks on the button, open the modal
 	$("#myBtn").click(function() {
-	    $("#finishModal").css("display", "block");
+	  $("#finishModal").css("display", "block");
 	});
 
-	// When user clicks "Play again", new game starts and modal closes
+
+	// START GAME
+	$(".btnStart").click(function() {
+		game = Object.create(TicTacToe);
+		start();
+		updatePoints();
+		console.log(game.board);
+		$("#gameModal").css("display", "none");
+	});
+
+
+	// PLAY AGAIN: When user clicks "Play again", new game starts
 	$(".btnPlayAgain").click(function() {
-		newGame();
+		playAgain();
 		$("#finishModal").css("display", "none");
 	});
 	
+
+	// RESET: When click Reset button, creates a new TicTacToe object
 	$(".btnReset").click(function() {
-		resetGame();
+		clearBoard();
 		$("#finishModal").css("display", "none");
+		$("#gameModal").css("display", 'block');
 	});
 
-	// For every square, if empty, do move and print symbol
+
+	// For every square, if empty, do move, print symbol and check for winner
 	$("[class^='square']").each(function() {
 		var square = $(this);
 
@@ -140,62 +135,14 @@ $(document).ready(function($) {
 			if (square.text() == "") {
 				printSymbol(square);
 				move(square.attr('class'));
+				endGame(game.winner);
 				
 			}
 		});
 	})
 });
 
-function move(square) {
-	switch (square) {
-		case "square1":
-			TicTacToe.move(0,0);
-			break;
-		case "square2":
-			TicTacToe.move(0,1);
-			break;
-		case "square3":
-			TicTacToe.move(0,2);
-			break;
-		case "square4":
-			TicTacToe.move(1,0);
-			break;
-		case "square5":
-			TicTacToe.move(1,1);
-			break;
-		case "square6":
-			TicTacToe.move(1,2);
-			break;
-		case "square7":
-			TicTacToe.move(2,0);
-			break;
-		case "square8":
-			TicTacToe.move(2,1);
-			break;
-		case "square9":
-			TicTacToe.move(2,2);
-			break;
-	}
-};
-
-function printSymbol(square) {
-	TicTacToe.currentPlayer == 1 ? square.text("X") : square.text("O");
-};
-
-// Resets board
-function newGame() {
-	TicTacToe.clear();
-
-	updatePoints();
-
-	$("[class^='square']").each(function() {
-		var square = $(this);
-		square.text("");
-	});
-}
-
 function start() {
-	newGame();
 	/*
 	if ($('[value="1player"]').is(':checked')) {
 		//Aca hago lo que necesito para jugar vs pc
@@ -205,32 +152,93 @@ function start() {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
 	}
-
-	$("#gameModal").css("display", "none");
-	
 }
+
+function move(square) {
+	switch (square) {
+		case "square1":
+			game.move(0,0);
+			break;
+		case "square2":
+			game.move(0,1);
+			break;
+		case "square3":
+			game.move(0,2);
+			break;
+		case "square4":
+			game.move(1,0);
+			break;
+		case "square5":
+			game.move(1,1);
+			break;
+		case "square6":
+			game.move(1,2);
+			break;
+		case "square7":
+			game.move(2,0);
+			break;
+		case "square8":
+			game.move(2,1);
+			break;
+		case "square9":
+			game.move(2,2);
+			break;
+	}
+};
+
+function printSymbol(square) {
+	game.currentPlayer == 1 ? square.text("X") : square.text("O");
+};
 
 // Updates points in board based on player's symbol
 function updatePoints() {
 	if ($("#symbolP1").html() == "X") {
-		$("#scoreP1").html(TicTacToe.pointsX);
-		$("#scoreP2").html(TicTacToe.pointsO);
+		$("#scoreP1").html(game.pointsX);
+		$("#scoreP2").html(game.pointsO);
 	} else {
-		$("#scoreP2").html(TicTacToe.pointsX);
-		$("#scoreP1").html(TicTacToe.pointsO);
+		$("#scoreP2").html(game.pointsX);
+		$("#scoreP1").html(game.pointsO);
 	}
+};
+
+function clearBoard() {
+
+	$("[class^='square']").each(function() {
+	var square = $(this);
+	square.text("");
+	});
 }
 
-// Resets game
-function resetGame() {
-	$("#gameModal").css("display", "block");
-	TicTacToe.resetGame();
+// Resets board
+function playAgain() {
+
+	updatePoints();
+
+	clearBoard();
+
+	game.playAgain();
+
+};
+
+function endGame(player) {
+
+  if (player == 1) {
+  	this.pointsX += 1;
+  	$("#finishText").html("X Wins!");
+  	$("#finishModal").css("display", "block");
+
+  } else if (player == 2) {
+  	this.pointsO += 1;
+    $("#finishText").html("O Wins!");
+    $("#finishModal").css("display", "block");
+
+  } else if (player == 0){
+    $("#finishText").html("It's a tie...");
+    $("#finishModal").css("display", "block");
+  }
 }
+
 /*
 BUGS:
--Cuando ganas en la ultima jugada en linea horizontal, sale empate pero suma el punto (?)
 -Cuando juega P1 con X, desp reset y juega con O, desp reset y juega con X otra vez, no cambia.
-
-TODO:
-endGame maneja el modal, deberia hacerlo una funcion externa creo
 */
