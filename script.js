@@ -2,6 +2,9 @@ var TicTacToe = {
 	board: [[0,0,0], [0,0,0], [0,0,0]],
 	currentPlayer: 1,
 	moves: 0,
+	pointsX: 0,
+	pointsO: 0,
+	end: false,
 
 	//Changes player's turn
 	changeTurn: function(currentPlayer) {
@@ -16,6 +19,9 @@ var TicTacToe = {
 		}
 		self.changeTurn();
 		self.checkGame(self.board);
+
+		// Debug
+		self.debug();
 	},
 
 	debug: function() {
@@ -27,34 +33,45 @@ var TicTacToe = {
 		this.board = [[0,0,0], [0,0,0], [0,0,0]];
 		this.currentPlayer = 1;
 		this.moves = 0;
+		this.end = false;
+	},
+
+	resetGame: function() {
+		this.clear();
+		this.pointsX = 0;
+		this.pointsO = 0;
 	},
 
 	// Checks if a player as won the game
+
 	checkGame: function(board) {
 		var self = this;
 
-	  // Check for tic-tac-toe in row
-	  board.forEach(function(current) {
-	    var equal = current[0] == current[1] && current[1] == current[2];
+		// Check for tic-tac-toe in row
+		for (var i = 0; i < board.length; i++) {
+			var equal = board[i][0] == board[i][1] && board[i][1] == board[i][2];
 
-	    if (equal && current.indexOf(1) != -1) {
-	      return self.endGame("X");
+			if (equal && board[i].indexOf(1) != -1) {
+    		this.end = true;
+    		return self.endGame("X");
 
-	    } else if (equal && current.indexOf(2) != -1) {
-	      return self.endGame("O");
+    	} else if (equal && board[i].indexOf(2) != -1) {
+    		this.end = true;
+      	return self.endGame("O");
 	    }
-	  })
+		}
 
 	  // Check for tic-tac-toe on column
 	  for (var i = 0; i < 3; i++) {
 
 	    if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-
 	      if (board[0][i] == 1) {
-	        return this.endGame("X");
+	      	this.end = true;
+	        return self.endGame("X");
 
 	      } else if (board[0][i] == 2) {
-	        return this.endGame("O");
+	      	this.end = true;
+	        return self.endGame("O");
 	      }
 	    }
 	  }
@@ -64,56 +81,55 @@ var TicTacToe = {
 	      board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
 
 	    if (board[1][1] == 1) {
-	        return this.endGame("X");
+	    	this.end = true;
+	        return self.endGame("X");
 
 	      } else if (board[1][1] == 2) {
-	        return this.endGame("O");
+	      	this.end = true;
+	        return self.endGame("O");
 	      }
 	  }
 
-	  // Checks if game is over in a tie
 	  this.moves += 1;
-	  if (this.moves == 9){
-	  	return this.endGame("T");
-	  }
+
+	  if (this.moves == 9 && this.end == false) {
+			return this.endGame("T");
+		}
 	}, 
 
 	endGame: function(symbol) {
 	  if(symbol == "X") {
-	    alert("X Wins");
+	  	this.pointsX += 1;
+	  	$("#finishText").html("X Wins!");
 
 	  } else if (symbol == "O") {
-	    alert("O Wins");
+	  	this.pointsO += 1;
+	    $("#finishText").html("O Wins!");
 
 	  } else if (symbol == "T"){
-	    alert("It's a tie!");
+	    $("#finishText").html("It's a tie...");
 	  }
-	  newGame();
+	  $("#finishModal").css("display", "block");
 	}
 }
 
 $(document).ready(function($) {
 
-	// When the user clicks on the button, open the modal
+	// When user clicks on the button, open the modal
 	$("#myBtn").click(function() {
-	    $("#myModal").css("display", "block");
+	    $("#finishModal").css("display", "block");
 	});
 
-	// When the user clicks on <span> (x), close the modal
-	$(".close").click(function() {
-	    $("#myModal").css("display", "none");
+	// When user clicks "Play again", new game starts and modal closes
+	$(".btnPlayAgain").click(function() {
+		newGame();
+		$("#finishModal").css("display", "none");
 	});
-
-	// When the user clicks anywhere outside of the modal, close it
-	$("body").click(function(event) {
-		var target = $(event.target);
-    if (target.is("#myModal")) {
-      $("#myModal").css("display", "none");
-    };
-	});
-
-	//$("#gameModal").css("display", "block");
 	
+	$(".btnReset").click(function() {
+		resetGame();
+		$("#finishModal").css("display", "none");
+	});
 
 	// For every square, if empty, do move and print symbol
 	$("[class^='square']").each(function() {
@@ -169,6 +185,9 @@ function printSymbol(square) {
 // Resets board
 function newGame() {
 	TicTacToe.clear();
+
+	updatePoints();
+
 	$("[class^='square']").each(function() {
 		var square = $(this);
 		square.text("");
@@ -183,9 +202,35 @@ function start() {
 	}
 	*/
 	if ($('[value="square"]').is(':checked')) {
-		//TicTacToe.currentPlayer = 2;
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
 	}
+
+	$("#gameModal").css("display", "none");
 	
 }
+
+// Updates points in board based on player's symbol
+function updatePoints() {
+	if ($("#symbolP1").html() == "X") {
+		$("#scoreP1").html(TicTacToe.pointsX);
+		$("#scoreP2").html(TicTacToe.pointsO);
+	} else {
+		$("#scoreP2").html(TicTacToe.pointsX);
+		$("#scoreP1").html(TicTacToe.pointsO);
+	}
+}
+
+// Resets game
+function resetGame() {
+	$("#gameModal").css("display", "block");
+	TicTacToe.resetGame();
+}
+/*
+BUGS:
+-Cuando ganas en la ultima jugada en linea horizontal, sale empate pero suma el punto (?)
+-Cuando juega P1 con X, desp reset y juega con O, desp reset y juega con X otra vez, no cambia.
+
+TODO:
+endGame maneja el modal, deberia hacerlo una funcion externa creo
+*/
