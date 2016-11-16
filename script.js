@@ -103,10 +103,8 @@ $(document).ready(function($) {
 
 	// START GAME
 	$(".btnStart").click(function() {
-		game = Object.create(TicTacToe);
 		start();
 		updatePoints();
-		console.log(game.board);
 		$("#gameModal").css("display", "none");
 	});
 
@@ -143,6 +141,9 @@ $(document).ready(function($) {
 });
 
 function start() {
+
+	game = null;
+	game = Object.create(TicTacToe);
 	/*
 	if ($('[value="1player"]').is(':checked')) {
 		//Aca hago lo que necesito para jugar vs pc
@@ -187,7 +188,16 @@ function move(square) {
 };
 
 function printSymbol(square) {
-	game.currentPlayer == 1 ? square.text("X") : square.text("O");
+
+	if (game.currentPlayer == 1) {
+		square.fadeIn('slow', function() {
+			square.html("X");
+		});
+	} else {
+		square.fadeIn('slow', function() {
+			square.html("O");
+		});
+	}
 };
 
 // Updates points in board based on player's symbol
@@ -207,7 +217,7 @@ function clearBoard() {
 	var square = $(this);
 	square.text("");
 	});
-}
+};
 
 // Resets board
 function playAgain() {
@@ -232,11 +242,11 @@ function endGame(player) {
     $("#finishText").html("O Wins!");
     $("#finishModal").css("display", "block");
 
-  } else if (player == 0){
+  } else if (player == 0) {
     $("#finishText").html("It's a tie...");
     $("#finishModal").css("display", "block");
   }
-}
+};
 
 /*
 BUGS:

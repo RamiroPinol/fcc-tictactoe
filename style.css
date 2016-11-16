@@ -225,7 +225,7 @@ button:hover {
   border-radius: 3px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
   height: 35px;
-  margin: 10px auto;
+  margin: 0 auto;
   position: relative;
   width: 200px;
 }
@@ -336,18 +336,13 @@ button:hover {
 #gameModal .modal-content {
   animation-duration: 1s;
   animation-name: bounceIn;
-  height: 270px;
+  height: 280px;
 }
 
 #gameModal p {
   color: black;
   font-size: 1em;
-  margin-bottom: 5px;
-  margin: 15px;
-}
-
-#gameModal #p2 {
-	margin-top: 20px;
+  margin: 30px auto 0 auto;
 }
 
 #gameModal #p3 {
@@ -399,4 +394,8 @@ button:hover {
 	  font-size: 3.7em;
   }
   
+  #gameModal .modal-content {
+    height: 300px;
+    width: 350px;
+  }
 }
