@@ -26,7 +26,7 @@ var TicTacToe = function() {
 		self.checkGame(self.board);
 
 		// Debug
-		self.debug();
+		//self.debug();
 	};
 
 	this.debug = function() {
@@ -42,7 +42,7 @@ var TicTacToe = function() {
 		this.moves = 0;
 		this.winner = -1;
 	};
-	
+
 	// Checks if a player as won the game
 	this.checkGame = function(board) {
 		var self = this;
@@ -92,7 +92,7 @@ var TicTacToe = function() {
 
 	  this.moves += 1;
 
-	  if (this.moves == 9 && this.winner == undefined) {
+	  if (this.moves == 9 && this.winner == -1) {
 			return this.winner = 0;
 		}
 	};
@@ -166,6 +166,9 @@ function start() {
 	if ($('[value="square"]').is(':checked')) {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
+	} else {
+		$("#symbolP1").text("X");
+		$("#symbolP2").text("O");
 	}
 }
 
