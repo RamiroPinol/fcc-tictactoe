@@ -1,268 +1,402 @@
+/*
+ * CONTENTS:
+ *
+ * GLOBALS AND BODY
+ *
+ * HEADER TEXT AND SCORE
+ *  H1.................(Header text).
+ *  Score..............(Score DIV globals).
+ *  Player symbol......(Player's symbol cell).
+ *  Player score.......(Player score cell).
+ *
+ * BOARD
+ *  Board..............(Board's container).
+ *  Squares............(Boards's cells globals and style).
+ *
+ * BUTTONS AND SWITCH
+ *  Buttons............(Button style).
+ *  Switch.............(Switch style).
+ *
+ * MODAL
+ *  Background.........(Modal's background).
+ *  Content............(Modal content / box).
+ *  Pregame modal......(Pre-game popup style).
+ *
+ * ANIMATIONS
+ *
+ * RESPONSIVE DECLARATIONS
+ *
+ */
+
+
+/*------------------------------------*\
+  #GLOBALS AND BODY
+\*------------------------------------*/
+
 * {
-	text-align: center;
-	margin: auto;
-	color: #d8caa8;
-	font-family: arial;
+  color: #d8caa8;
+  font-family: arial;
+  margin: auto;
+  text-align: center;
 }
+
 body {
 	background-color: #302010;
-	padding-top: 50px; 
+	padding-top: 25px;
 }
+
+
+
+/*------------------------------------*\
+  #HEADER TEXT AND SCORE
+\*------------------------------------*/
+
 h1 {
-	color: #5C832F;
+	color: #5c832f;
 }
-/*Stats*/
-#stats {
+
+/* Score */
+#score {
 	margin: 10px auto;
 	width: 360px;
 }
+
 .cell {
-  display: table-cell;
   border: 1px solid #68594e;
+  display: table-cell;
 }
-/*Player's symbol*/
-[id^=symbol] {
+
+#player1,
+#player2 {
+  border-left: 0;
+  border-right: 0;
+  padding: 10px 0;
+}
+
+#stat-space {
+  border: 0;
+  width: 20px;
+}
+
+/* Player's symbol */
+[ id^=symbol ] {
+  font-family: 'Rock Salt', cursive;
+  font-size: 1em;
   width: 30px;
-	font-family: 'Rock Salt', cursive;
-	font-size: 1em;
 }
-/*Player's score*/
-[id^=score] {
+
+#symbolP1 {
+  border-radius: 5px 0 0 5px;
+  border-right: 0;
+  text-align: right;
+}
+
+#symbolP2 {
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  text-align: left;
+}
+
+/* Player's score */
+[ id^=score ] {
   width: 40px;
 }
+
 #scoreP1 {
 	border-radius: 0 5px 5px 0;
 }
+
 #scoreP2 {
 	border-radius: 5px 0 0 5px;
 }
-#player {
-  padding: 10px 0;
-	border-left: 0;
-	border-right: 0;
-}
-#stat-space {
-  width: 20px;
-  border: 0;
-}
-#symbolP1 {
-	border-radius: 5px 0 0 5px;
-	border-right: 0;
-	text-align: right;
-}
-#symbolP2 {
-	border-left: 0;
-	border-radius: 0 5px 5px 0;
-	text-align: left;
-}
-/*Board*/
+
+
+
+/*------------------------------------*\
+  #BOARD
+\*------------------------------------*/
+
+/* Board */
 #board {
-	background-color: #57391D;
+	background-color: #57391d;
 	border-collapse: collapse;
-	border-radius: 5px;
-	border: 1px solid #2e251f;
-	box-shadow: inset 0px 0px 3px 0px rgba(0, 0, 0, 0.4);
+	border-radius: 10px;
+	box-shadow: inset 0px 0px 4px 0px rgba( 0, 0, 0, 0.5 );
 	cursor: pointer;
 	height: 360px;
 	width: 360px;
 }
+
 .table {
 	display: table;
 }
+
 .row {
 	display: table-row;
 }
-/*
-@keyframes test {
-  0%   {font-size: 1em;}
-  25%  {font-size: 2em;}
-  50%  {font-size: 4em;}
-  100% {font-size: 3em;}
-}
-*/
+
 /* Squares */
 [class^="square"] {
 	border: 3px solid #302010;
 	display: table-cell;
 	font-family: 'Rock Salt', cursive;
-	font-size: 3em;
-	height: 117px;
+	font-size: 2.9em;
+	height: 32%;
 	vertical-align: top;
-	width: 117px;
+	width: 32%;
   z-index: -1;
 	-ms-user-select: none;
   -moz-user-select: none;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 }
+
 [class^="square"]:hover {
-	background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba( 255, 255, 255, 0.2 );
 }
+
 .square1 {
 	border-left: 0;
 	border-top: 0;
-	border-top-left-radius: 5px;
+	border-top-left-radius: 10px;
 }
+
 .square2 {
 	border-top: 0;
 }
+
 .square3 {
 	border-right: 0;
 	border-top: 0;
-	border-top-right-radius: 5px;
+	border-top-right-radius: 10px;
 }
+
 .square4 {
 	border-left: 0;
 }
+
 .square6 {
 	border-right: 0;
 }
+
 .square7 {
 	border-bottom: 0;
-	border-bottom-left-radius: 5px;
+	border-bottom-left-radius: 10px;
 	border-left: 0;
 }
+
 .square8 {
 	border-bottom: 0;
 }
+
 .square9 {
 	border-bottom: 0;
-	border-bottom-right-radius: 5px;
+	border-bottom-right-radius: 10px;
 	border-right: 0;
 }
-/* Popup */
-.popup {
-	display: block;
-  background-color: #d8caa8;
-  width: 300px;
-  height: 270px;
-  font-family: arial;
-	border: 1px solid black;
-	margin-top: 10px;
-}
+
+
+
+/*------------------------------------*\
+  #BUTTONS AND SWITCH
+\*------------------------------------*/
+
+/* Buttons */
 button {
+  background-color: #5c832f;
+  border-radius: 5px;
+  /*! background-image: linear-gradient(#846d57, #57391D); */
+  background-image: linear-gradient(#97b07a, #5c832f);
   border: 1px solid #68594e;
-  width: 95px;
-  height: 40px;
-  font-size: 1.1em;
+  box-shadow: inset 0 1px rgba( 255, 255, 255, 0.5 ), 0 0 2px rgba( 0, 0, 0, 0.2 );
   cursor: pointer;
-	background-color: #5C832F;
-  background-image: linear-gradient(#97b07a, #5C832F);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
-	border-radius: 5px;
+  font-size: 1em;
+  height: 40px;
+  width: 100px;
 }
+
 button:hover {
-	background-color: rgba(255, 255, 255, 0.6);
+	background-color: rgba( 255, 255, 255, 0.6 );
 }
-.popup p {
-  margin: 15px;
-	margin-bottom: 5px;
-	font-size: 1em;
-	color: black;
-}
-.popup #p2 {
-	margin-top: 20px;
-}
-.popup #p3 {
-	margin: 5px 0 25px;
-	font-size: 0.7em;
-}
+
+/* Switch */
 .switchGame,
 .switchSymbol {
-  position: relative;
-  height: 35px;
-  width: 200px;
-  margin: 10px auto;
   background: #c7ba9b;
   border-radius: 3px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
-}
-.switch-label {
+  box-shadow: inset 0 1px 3px rgba( 0, 0, 0, 0.3 ), 0 1px rgba( 255, 255, 255, 0.1 );
+  height: 35px;
+  margin: 0 auto;
   position: relative;
-  z-index: 2;
-  font-size: 14px;
-  float: left;
-  width: 98px;
-  line-height: 35px;
-  color: rgba(0, 0, 0, 0.65);
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+  width: 200px;
+}
+
+.switch-label {
+  color: rgba( 0, 0, 0, 0.65 );
   cursor: pointer;
+  float: left;
+  font-size: 14px;
+  line-height: 35px;
+  position: relative;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.45 );
+  width: 98px;
+  z-index: 2;
 }
 .switch-label:active {
   font-weight: bold;
   transition: font-weight 0.15s ease-in;
 }
+
 .switch-label-off {
   padding-left: 2px;
 }
+
 .switch-label-on {
   padding-right: 2px;
 }
+
 .switch-input {
   display: none;
 }
+
 .switch-input:checked + .switch-label {
+  color: rgba( 0, 0, 0, 0.65 ); /* Active input text color */
   font-weight: bold;
-  color: rgba(0, 0, 0, 0.65);
-  text-shadow: 0 1px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px rgba( 255, 255, 255, 0.25 );
   transition: color 0.15s ease-out, text-shadow 0.15s ease-out;
 }
+
 .switch-input:checked + .switch-label-on ~ .switch-selection {
   left: 100px;
 }
+
 .switch-selection {
-  position: absolute;
-  z-index: 1;
-  top: 2px;
-  left: 2px;
-  display: block;
-  width: 98px;
-  height: 31px;
+  background-color: #5c832f;
+  background-image: linear-gradient( #97b07a, #5c832f ); /* Button background */
   border-radius: 3px;
-  background-color: #5C832F;
-  background-image: linear-gradient(#97b07a, #5C832F);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px rgba( 255, 255, 255, 0.5 ), 0 0 2px rgba( 0, 0, 0, 0.2 );
+  display: block;
+  height: 31px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
   transition: left 0.15s ease-out;
-}
- /* The Modal (background) */
-#myModal {
-	display: none; /* Hidden by default */
-	position: fixed;
-	z-index: 1;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0,0,0); /* Fallback color */
-	background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-}
-/* Modal Content/Box */
-.modal-content {
-  background-color: rgb(142, 123, 111);
-  margin: 15% auto;
-  border: 1px solid #2e251f;
-  width: 50%;
+  width: 98px;
+  z-index: 1;
 }
 
-/* The Close Button */
-.modal-header {
-  color: #aaa;
-	display: block;
-  font-size: 30px;
-  font-weight: bold;
-	border-bottom: 1px solid #42352c;
+
+
+/*------------------------------------*\
+  #MODALS
+\*------------------------------------*/
+
+ /* Modal (background) */
+.modal {
+  background-color: rgb( 0,0,0 ); /* Fallback color */
+  background-color: rgba( 0,0,0,0.6 ); /* Black w/ opacity */
+  display: none; /* Hidden by default */
+  height: 100%;
+  left: 0;
+  overflow: auto; /* Enable scroll if needed */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
 }
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #d8caa8;
+  margin: 15% auto;
+  border: 1px solid black;
+  width: 300px;
 }
+
 .modal-body {
 	height: 100px;
 }
-.modal-footer{
-	border-top: 1px solid black;
+
+.modal-body p {
+  color: #302010;
+  font-size: 1.5em;
+  position: relative;
+  top: 40%;
+}
+
+.modal-footer {
+  margin-bottom: 15px;
+}
+
+/* Pre-game popup */
+#gameModal {
+	display: block;
+}
+
+#gameModal .modal-content {
+  animation-duration: 1s;
+  animation-name: bounceIn;
+  height: 280px;
+}
+
+#gameModal p {
+  color: black;
+  font-size: 1em;
+  margin: 30px auto 0 auto;
+}
+
+#gameModal #p3 {
+  font-size: 0.7em;
+  margin: 5px 0 25px;
+}
+
+
+
+/*------------------------------------*\
+  #ANIMATIONS
+\*------------------------------------*/
+@keyframes bounceIn {
+  0%{
+    opacity: 0;
+    transform: scale( 0.3 ) translate3d( 0, 0, 0 );
+  }
+  50%{
+    opacity: 0.9;
+    transform: scale( 1.1 );
+  }
+  80%{
+    opacity: 1;
+    transform: scale( 0.89 );
+  }
+  100%{
+    opacity: 1;
+    transform: scale( 1 ) translate3d( 0, 0, 0 );
+  }
+}
+
+
+
+/*------------------------------------*\
+  #RESPONSIVE DECLARATIONS
+\*------------------------------------*/
+
+@media only screen and ( min-width: 768px ) {
+
+  body { padding-top: 50px; }
+
+  #board {
+    height: 460px;
+    width: 460px;
+  }
+
+  /* Squares */
+  [class^="square"] {
+	  font-size: 3.7em;
+  }
+
+  #gameModal .modal-content {
+    height: 300px;
+    width: 350px;
+  }
 }
