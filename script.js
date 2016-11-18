@@ -5,7 +5,7 @@ var TicTacToe = {
 	moves: 0,
 	pointsX: 0,
 	pointsO: 0,
-	winner: undefined,
+	winner: -1,
 
 	//Changes player's turn
 	changeTurn: function(player) {
@@ -31,16 +31,27 @@ var TicTacToe = {
 
 	debug: function() {
 		console.log(this.board[0], this.board[1], this.board[2]);
-		console.log("Player: ", this.currentPlayer, "Moves: ", this.moves);
+		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer, "Moves: ", this.moves);
+		console.log(this.pointsO, this.pointsX, this.winner);
 	},
 
 	playAgain: function() {
-		this.board = [[0,0,0], [0,0,0], [0,0,0]];
+		this.board = [ [0,0,0], [0,0,0], [0,0,0] ];
 		this.changeTurn("first");
 		this.currentPlayer = this.firstPlayer;
 		this.moves = 0;
-		this.end = false;
+		this.winner = -1;
 	},
+
+// Method to reset object. Create a new one should be the same.
+/*
+	reset: function() {
+		this.playAgain();
+		this.currentPlayer = 1;
+		this.pointsX = 0;
+		this.pointsO = 0;
+	}
+*/
 
 	// Checks if a player as won the game
 	checkGame: function(board) {
@@ -51,9 +62,11 @@ var TicTacToe = {
 			var equal = board[i][0] == board[i][1] && board[i][1] == board[i][2];
 
 			if (equal && board[i].indexOf(1) != -1) {
+				this.pointsX += 1;
     		return this.winner = 1;
 
     	} else if (equal && board[i].indexOf(2) != -1) {
+				this.pointsO += 1;
     		return this.winner = 2;
 	    }
 		}
@@ -63,9 +76,11 @@ var TicTacToe = {
 
 	    if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
 	      if (board[0][i] == 1) {
+					this.pointsX += 1;
 	      	return this.winner = 1;
 
 	      } else if (board[0][i] == 2) {
+					this.pointsO += 1;
 	      	return this.winner = 2;
 	      }
 	    }
@@ -76,9 +91,11 @@ var TicTacToe = {
 	      board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
 
 	    if (board[1][1] == 1) {
+				this.pointsX += 1;
 	    	return this.winner = 1;
 
 	      } else if (board[1][1] == 2) {
+					this.pointsO += 1;
 	      	return this.winner = 2;
 	      }
 	  }
@@ -103,6 +120,8 @@ $(document).ready(function($) {
 
 	// START GAME
 	$(".btnStart").click(function() {
+		//game = JSON.parse(JSON.stringify(TicTacToe));
+		game = Object.create(TicTacToe);
 		start();
 		updatePoints();
 		$("#gameModal").css("display", "none");
@@ -114,7 +133,7 @@ $(document).ready(function($) {
 		playAgain();
 		$("#finishModal").css("display", "none");
 	});
-	
+
 
 	// RESET: When click Reset button, creates a new TicTacToe object
 	$(".btnReset").click(function() {
@@ -134,16 +153,13 @@ $(document).ready(function($) {
 				printSymbol(square);
 				move(square.attr('class'));
 				endGame(game.winner);
-				
+
 			}
 		});
 	})
 });
 
 function start() {
-
-	game = null;
-	game = Object.create(TicTacToe);
 	/*
 	if ($('[value="1player"]').is(':checked')) {
 		//Aca hago lo que necesito para jugar vs pc
@@ -190,13 +206,9 @@ function move(square) {
 function printSymbol(square) {
 
 	if (game.currentPlayer == 1) {
-		square.fadeIn('slow', function() {
-			square.html("X");
-		});
+		square.html("X").fadeIn(600);
 	} else {
-		square.fadeIn('slow', function() {
-			square.html("O");
-		});
+		square.html("O").fadeIn(600);
 	}
 };
 
@@ -233,12 +245,10 @@ function playAgain() {
 function endGame(player) {
 
   if (player == 1) {
-  	this.pointsX += 1;
   	$("#finishText").html("X Wins!");
   	$("#finishModal").css("display", "block");
 
   } else if (player == 2) {
-  	this.pointsO += 1;
     $("#finishText").html("O Wins!");
     $("#finishModal").css("display", "block");
 
