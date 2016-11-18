@@ -1,23 +1,23 @@
-var TicTacToe = {
-	board: [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ],
-	firstPlayer: 1,
-	currentPlayer: 1,
-	moves: 0,
-	pointsX: 0,
-	pointsO: 0,
-	winner: -1,
+var TicTacToe = function() {
+	this.board = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ];
+	this.firstPlayer = 1;
+	this.currentPlayer = 1;
+	this.moves = 0;
+	this.pointsX = 0;
+	this.pointsO = 0;
+	this.winner = -1;
 
 	//Changes player's turn
-	changeTurn: function(player) {
+	this.changeTurn = function(player) {
 		if (player == "current") {
 			this.currentPlayer == 1 ? this.currentPlayer = 2 : this.currentPlayer = 1;
 		} else if (player == "first") {
 			this.firstPlayer == 1 ? this.firstPlayer = 2 : this.firstPlayer = 1;
 		}
-	},
+	};
 
 	//Place player's move on board and changes turn
-	move: function(row, col) {
+	this.move = function(row, col) {
 		var self = this;
 		if (self.board[row][col] == 0) {
 			self.board[row][col] = self.currentPlayer;
@@ -27,34 +27,24 @@ var TicTacToe = {
 
 		// Debug
 		self.debug();
-	},
+	};
 
-	debug: function() {
+	this.debug = function() {
 		console.log(this.board[0], this.board[1], this.board[2]);
 		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer, "Moves: ", this.moves);
 		console.log(this.pointsO, this.pointsX, this.winner);
-	},
+	};
 
-	playAgain: function() {
+	this.playAgain = function() {
 		this.board = [ [0,0,0], [0,0,0], [0,0,0] ];
 		this.changeTurn("first");
 		this.currentPlayer = this.firstPlayer;
 		this.moves = 0;
 		this.winner = -1;
-	},
-
-// Method to reset object. Create a new one should be the same.
-/*
-	reset: function() {
-		this.playAgain();
-		this.currentPlayer = 1;
-		this.pointsX = 0;
-		this.pointsO = 0;
-	}
-*/
-
+	};
+	
 	// Checks if a player as won the game
-	checkGame: function(board) {
+	this.checkGame = function(board) {
 		var self = this;
 
 		// Check for tic-tac-toe in row
@@ -105,8 +95,8 @@ var TicTacToe = {
 	  if (this.moves == 9 && this.winner == undefined) {
 			return this.winner = 0;
 		}
-	}
-}
+	};
+};
 
 var game;
 
@@ -121,7 +111,7 @@ $(document).ready(function($) {
 	// START GAME
 	$(".btnStart").click(function() {
 		//game = JSON.parse(JSON.stringify(TicTacToe));
-		game = Object.create(TicTacToe);
+		game = new TicTacToe();
 		start();
 		updatePoints();
 		$("#gameModal").css("display", "none");
@@ -157,6 +147,14 @@ $(document).ready(function($) {
 			}
 		});
 	})
+
+	/* !!! Agregar acá la decoracion para turno
+		$("#scoreP2, #player2, #symbolP2").each(function() {
+			$(this).css("background-color", )
+		});
+
+	*/
+
 });
 
 function start() {
