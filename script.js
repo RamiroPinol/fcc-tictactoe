@@ -7,7 +7,7 @@ var TicTacToe = function() {
 	this.pointsO = 0;
 	this.winner = -1;
 
-	//Changes player's turn
+	// Changes player's turn
 	this.changeTurn = function(player) {
 		if (player == "current") {
 			this.currentPlayer == 1 ? this.currentPlayer = 2 : this.currentPlayer = 1;
@@ -16,7 +16,7 @@ var TicTacToe = function() {
 		}
 	};
 
-	//Place player's move on board and changes turn
+	// Place player's move on board and changes turn
 	this.move = function(row, col) {
 		var self = this;
 		if (self.board[row][col] == 0) {
@@ -110,7 +110,6 @@ $(document).ready(function($) {
 
 	// START GAME
 	$(".btnStart").click(function() {
-		//game = JSON.parse(JSON.stringify(TicTacToe));
 		game = new TicTacToe();
 		start();
 		updatePoints();
@@ -143,6 +142,14 @@ $(document).ready(function($) {
 				printSymbol(square);
 				move(square.attr('class'));
 				endGame(game.winner);
+				ai();
+
+				// Add changing-color animation
+				var squareClass = square.attr( 'class' );
+				$("." + squareClass).addClass( "animateSquare" );
+				setTimeout(function () {
+					$("." + squareClass).removeClass( "animateSquare" );
+				}, 1500);
 
 			}
 		});
@@ -152,7 +159,6 @@ $(document).ready(function($) {
 		$("#scoreP2, #player2, #symbolP2").each(function() {
 			$(this).css("background-color", )
 		});
-
 	*/
 
 });
@@ -207,9 +213,9 @@ function move(square) {
 function printSymbol(square) {
 
 	if (game.currentPlayer == 1) {
-		square.html("X").fadeIn(600);
+		square.html("X");
 	} else {
-		square.html("O").fadeIn(600);
+		square.html("O");
 	}
 };
 
@@ -259,7 +265,75 @@ function endGame(player) {
   }
 };
 
-/*
-BUGS:
--Cuando juega P1 con X, desp reset y juega con O, desp reset y juega con X otra vez, no cambia.
-*/
+var state;
+
+function ai() {
+  state = $.extend(true, {}, game);
+  var board = state.board;
+  var myMove = state.currentPlayer == 2 ? true : false;
+
+  if (myMove) {
+    makeMove();
+  }
+
+  function makeMove() {
+    board = minimaxMove(board);
+    console.log(numNodes);
+    myMove = false;
+  }
+
+  function minimaxMove(board) {
+    numNodes = 0;
+		var player = state.currentPlayer == 2 ? true : false;
+		return recurseMinimax(board, player)[1];
+  }
+
+  var numNodes = 0;
+
+  function recurseMinimax(board, player) {
+    numNodes++;
+    state.checkGame(board);
+		var winner = state.winner;
+		console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
+		console.log(player);
+		if (winner != -1) {
+      switch (winner) {
+        case 2:
+          // AI wins
+          return [1, board]
+        case 1:
+          // opponent wins
+          return [-1, board]
+        case 0:
+          // Tie
+          return [0, board];
+      }
+    } else {
+      // Next states
+      var nextVal = null;
+      var nextBoard = null;
+
+			// for every game cell
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+					// if empty cell, make move in that cell
+          if (board[i][j] == 0) {
+            board[i][j] = player;
+
+						// recursive function value for the other player
+            var value = recurseMinimax(board, !player)[0];
+            if ((player && (nextVal == null || value > nextVal)) ||
+							(!player && (nextVal == null || value < nextVal))) {
+              nextBoard = board.map(function(arr) {
+                return arr.slice();
+              });
+              nextVal = value;
+            }
+            board[i][j] = 0;
+          }
+        }
+      }
+      return [nextVal, nextBoard];
+    }
+  }
+}
