@@ -110,6 +110,11 @@ h1 {
 	border-radius: 5px 0 0 5px;
 }
 
+/* Player stats' cell */
+.turnHighlight {
+  background-color: rgba( 255, 255, 255, 0.2 );
+}
+
 
 
 /*------------------------------------*\

@@ -113,6 +113,7 @@ $(document).ready(function($) {
 		game = new TicTacToe();
 		start();
 		updatePoints();
+		highligthTurn();
 		$("#gameModal").css("display", "none");
 	});
 
@@ -134,6 +135,7 @@ $(document).ready(function($) {
 
 	// For every square, if empty, do move, print symbol and check for winner
 	$("[class^='square']").each(function() {
+
 		var square = $(this);
 
 		square.click(function() {
@@ -142,7 +144,7 @@ $(document).ready(function($) {
 				printSymbol(square);
 				move(square.attr('class'));
 				endGame(game.winner);
-				ai();
+				//ai();
 
 				// Add changing-color animation
 				var squareClass = square.attr( 'class' );
@@ -150,18 +152,26 @@ $(document).ready(function($) {
 				setTimeout(function () {
 					$("." + squareClass).removeClass( "animateSquare" );
 				}, 1500);
-
 			}
-		});
-	})
 
-	/* !!! Agregar acá la decoracion para turno
-		$("#scoreP2, #player2, #symbolP2").each(function() {
-			$(this).css("background-color", )
-		});
-	*/
+			highligthTurn();
 
+		});
+	});
 });
+
+function highligthTurn() {
+	
+	if (( $("#symbolP1").html() == "X" && game.currentPlayer == 1 ) ||
+			( $("#symbolP1").html() == "O" && game.currentPlayer == 2 )) {
+		$("#player1, #symbolP1, #scoreP1").addClass( "turnHighlight" );
+		$("#player2, #symbolP2, #scoreP2").removeClass( "turnHighlight" );
+
+	} else {
+		$("#player2, #symbolP2, #scoreP2").addClass( "turnHighlight" );
+		$("#player1, #symbolP1, #scoreP1").removeClass( "turnHighlight" );
+	}
+}
 
 function start() {
 	/*
