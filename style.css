@@ -41,6 +41,7 @@
 }
 
 body {
+  background-image: url("background.png");
 	background-color: #302010;
 	padding-top: 25px;
 }
@@ -53,6 +54,8 @@ body {
 
 h1 {
 	color: #5c832f;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 4em;
 }
 
 /* Score */

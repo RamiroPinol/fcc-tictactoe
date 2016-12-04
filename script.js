@@ -144,7 +144,7 @@ $(document).ready(function($) {
 				printSymbol(square);
 				move(square.attr('class'));
 				endGame(game.winner);
-				//ai();
+				ai();
 
 				// Add changing-color animation
 				var squareClass = square.attr( 'class' );
@@ -161,7 +161,7 @@ $(document).ready(function($) {
 });
 
 function highligthTurn() {
-	
+
 	if (( $("#symbolP1").html() == "X" && game.currentPlayer == 1 ) ||
 			( $("#symbolP1").html() == "O" && game.currentPlayer == 2 )) {
 		$("#player1, #symbolP1, #scoreP1").addClass( "turnHighlight" );
