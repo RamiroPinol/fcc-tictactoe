@@ -164,7 +164,7 @@ h1 {
 }
 
 .animateSquare {
-  animation: colorChange 1s ease-in;
+  animation: colorChange 0.5s ease-in;
 }
 
 .square1 {

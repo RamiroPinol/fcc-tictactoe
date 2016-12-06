@@ -143,7 +143,11 @@ $(document).ready(function($) {
 				printSymbol(square);
 				move(square.attr('class'));
 				endGame(game.checkGame(game.board));
-				ai();
+
+				// If 1 player game is selected, call AI
+				if ($('[value="1player"]').is(':checked')) {
+					ai();
+				}
 
 				// Add changing-color animation
 				var squareClass = square.attr( 'class' );
@@ -173,11 +177,7 @@ function highligthTurn() {
 }
 
 function start() {
-	/*
-	if ($('[value="1player"]').is(':checked')) {
-		//Aca hago lo que necesito para jugar vs pc
-	}
-	*/
+
 	if ($('[value="square"]').is(':checked')) {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
@@ -287,7 +287,6 @@ function ai() {
 
   function makeMove() {
     board = minimaxMove(board);
-    console.log(numNodes, board[0], board[1], board[2]);
 		aiClick(state.board, board);
     myMove = false;
   }
@@ -303,10 +302,7 @@ function ai() {
   function recurseMinimax(board, player) {
     numNodes++;
 		var winner = state.checkGame(board);
-		if (numNodes < 40) {
-      console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
-    }
-		//console.log(player);
+
 		if (winner != -1) {
       switch (winner) {
         case 2:
@@ -333,7 +329,6 @@ function ai() {
 
 						// recursive function value for the other player
             var value = recurseMinimax(board, !player)[0];
-						//console.log("Player:", player, "value:", value, "next:", nextVal);
             if ((player && (nextVal == null || value > nextVal)) ||
 							(!player && (nextVal == null || value < nextVal))) {
               nextBoard = board.map(function(arr) {
