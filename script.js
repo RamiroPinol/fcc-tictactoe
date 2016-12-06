@@ -304,7 +304,9 @@ function ai() {
   function recurseMinimax(board, player) {
     numNodes++;
 		var winner = state.checkGame(board);
-		//console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
+		if (numNodes < 40) {
+      console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
+    }
 		//console.log(player);
 		if (winner != -1) {
       switch (winner) {
@@ -353,19 +355,18 @@ function aiClick(board, moveBoard) {
 
 	// Returns the index of the element added by AI
 	function arrayDiff(a, b) {
-	  var index = 0;
-
 	  // Flat the arrays
 	  var a = a.reduce( (a, b) => a.concat(b) );
 	  var b = b.reduce( (a, b) => a.concat(b) );
 
-	  a.filter(function(i) {
-	    if (b.indexOf(i) < 0) {
-	      index = a.indexOf(i);
+	  for (var i = 0; i < a.length; i++) {
+	    if (a[i] != b[i]) {
+				return i;
 	    }
-	  });
-	  return index;
+	  }
 	};
+	setTimeout(function() {
+		$(".square" + (arrayDiff(moveBoard, board) + 1)).click();
+	}, 500);
 
-	$(".square" + (arrayDiff(moveBoard, board) + 1)).click();
-}
+};
