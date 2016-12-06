@@ -2,7 +2,6 @@ var TicTacToe = function() {
 	this.board = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ];
 	this.firstPlayer = 1;
 	this.currentPlayer = 1;
-	this.moves = 0;
 	this.pointsX = 0;
 	this.pointsO = 0;
 
@@ -29,7 +28,7 @@ var TicTacToe = function() {
 
 	this.debug = function() {
 		console.log(this.board[0], this.board[1], this.board[2]);
-		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer, "Moves: ", this.moves);
+		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer);
 		console.log(this.pointsO, this.pointsX);
 	};
 
@@ -37,8 +36,6 @@ var TicTacToe = function() {
 		this.board = [ [0,0,0], [0,0,0], [0,0,0] ];
 		this.changeTurn("first");
 		this.currentPlayer = this.firstPlayer;
-		this.moves = 0;
-		-1;
 	};
 
 	// Checks if a player as won the game
@@ -88,11 +85,13 @@ var TicTacToe = function() {
 	      }
 	  }
 
-	  this.moves += 1;
-	  if (this.moves == 9) {
+		// Flat array and check for tie (no empty cells)
+		var flat = board.reduce( (a, b) => a.concat(b) );
+	  if (flat.indexOf(0) == -1) {
 			return 0;
 		}
 
+		// Return -1 (no winner yet) otherwise;
 		return -1;
 
 	};
