@@ -5,7 +5,6 @@ var TicTacToe = function() {
 	this.moves = 0;
 	this.pointsX = 0;
 	this.pointsO = 0;
-	this.winner = -1;
 
 	// Changes player's turn
 	this.changeTurn = function(player) {
@@ -23,7 +22,6 @@ var TicTacToe = function() {
 			self.board[row][col] = self.currentPlayer;
 		}
 		self.changeTurn("current");
-		self.checkGame(self.board);
 
 		// Debug
 		//self.debug();
@@ -32,7 +30,7 @@ var TicTacToe = function() {
 	this.debug = function() {
 		console.log(this.board[0], this.board[1], this.board[2]);
 		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer, "Moves: ", this.moves);
-		console.log(this.pointsO, this.pointsX, this.winner);
+		console.log(this.pointsO, this.pointsX);
 	};
 
 	this.playAgain = function() {
@@ -40,7 +38,7 @@ var TicTacToe = function() {
 		this.changeTurn("first");
 		this.currentPlayer = this.firstPlayer;
 		this.moves = 0;
-		this.winner = -1;
+		-1;
 	};
 
 	// Checks if a player as won the game
@@ -53,11 +51,11 @@ var TicTacToe = function() {
 
 			if (equal && board[i].indexOf(1) != -1) {
 				this.pointsX += 1;
-    		return this.winner = 1;
+    		return 1;
 
     	} else if (equal && board[i].indexOf(2) != -1) {
 				this.pointsO += 1;
-    		return this.winner = 2;
+    		return 2;
 	    }
 		}
 
@@ -67,11 +65,11 @@ var TicTacToe = function() {
 	    if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
 	      if (board[0][i] == 1) {
 					this.pointsX += 1;
-	      	return this.winner = 1;
+	      	return 1;
 
 	      } else if (board[0][i] == 2) {
 					this.pointsO += 1;
-	      	return this.winner = 2;
+	      	return 2;
 	      }
 	    }
 	  }
@@ -82,19 +80,21 @@ var TicTacToe = function() {
 
 	    if (board[1][1] == 1) {
 				this.pointsX += 1;
-	    	return this.winner = 1;
+	    	return 1;
 
 	      } else if (board[1][1] == 2) {
 					this.pointsO += 1;
-	      	return this.winner = 2;
+	      	return 2;
 	      }
 	  }
 
 	  this.moves += 1;
-
-	  if (this.moves == 9 && this.winner == -1) {
-			return this.winner = 0;
+	  if (this.moves == 9) {
+			return 0;
 		}
+
+		return -1;
+
 	};
 };
 
@@ -143,7 +143,7 @@ $(document).ready(function($) {
 			if (square.text() == "") {
 				printSymbol(square);
 				move(square.attr('class'));
-				endGame(game.winner);
+				endGame(game.checkGame(game.board));
 				ai();
 
 				// Add changing-color animation
@@ -288,7 +288,8 @@ function ai() {
 
   function makeMove() {
     board = minimaxMove(board);
-    console.log(numNodes);
+    console.log(numNodes, board[0], board[1], board[2]);
+		aiClick(state.board, board);
     myMove = false;
   }
 
@@ -302,10 +303,9 @@ function ai() {
 
   function recurseMinimax(board, player) {
     numNodes++;
-    state.checkGame(board);
-		var winner = state.winner;
-		console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
-		console.log(player);
+		var winner = state.checkGame(board);
+		//console.log(winner, "en node", numNodes, board[0], board[1], board[2]);
+		//console.log(player);
 		if (winner != -1) {
       switch (winner) {
         case 2:
@@ -328,10 +328,11 @@ function ai() {
         for (var j = 0; j < 3; j++) {
 					// if empty cell, make move in that cell
           if (board[i][j] == 0) {
-            board[i][j] = player;
+            board[i][j] = player ? 2 : 1;
 
 						// recursive function value for the other player
             var value = recurseMinimax(board, !player)[0];
+						//console.log("Player:", player, "value:", value, "next:", nextVal);
             if ((player && (nextVal == null || value > nextVal)) ||
 							(!player && (nextVal == null || value < nextVal))) {
               nextBoard = board.map(function(arr) {
@@ -346,4 +347,25 @@ function ai() {
       return [nextVal, nextBoard];
     }
   }
+}
+
+function aiClick(board, moveBoard) {
+
+	// Returns the index of the element added by AI
+	function arrayDiff(a, b) {
+	  var index = 0;
+
+	  // Flat the arrays
+	  var a = a.reduce( (a, b) => a.concat(b) );
+	  var b = b.reduce( (a, b) => a.concat(b) );
+
+	  a.filter(function(i) {
+	    if (b.indexOf(i) < 0) {
+	      index = a.indexOf(i);
+	    }
+	  });
+	  return index;
+	};
+
+	$(".square" + (arrayDiff(moveBoard, board) + 1)).click();
 }
