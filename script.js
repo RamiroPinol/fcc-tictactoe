@@ -2,12 +2,10 @@ var TicTacToe = function() {
 	this.board = [ [0, 0, 0], [0, 0, 0], [0, 0, 0] ];
 	this.firstPlayer = 1;
 	this.currentPlayer = 1;
-	this.moves = 0;
 	this.pointsX = 0;
 	this.pointsO = 0;
-	this.winner = -1;
 
-	//Changes player's turn
+	// Changes player's turn
 	this.changeTurn = function(player) {
 		if (player == "current") {
 			this.currentPlayer == 1 ? this.currentPlayer = 2 : this.currentPlayer = 1;
@@ -16,14 +14,13 @@ var TicTacToe = function() {
 		}
 	};
 
-	//Place player's move on board and changes turn
+	// Place player's move on board and changes turn
 	this.move = function(row, col) {
 		var self = this;
 		if (self.board[row][col] == 0) {
 			self.board[row][col] = self.currentPlayer;
 		}
 		self.changeTurn("current");
-		self.checkGame(self.board);
 
 		// Debug
 		//self.debug();
@@ -31,16 +28,14 @@ var TicTacToe = function() {
 
 	this.debug = function() {
 		console.log(this.board[0], this.board[1], this.board[2]);
-		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer, "Moves: ", this.moves);
-		console.log(this.pointsO, this.pointsX, this.winner);
+		console.log("First player:", this.firstPlayer, "Current player: ", this.currentPlayer);
+		console.log(this.pointsO, this.pointsX);
 	};
 
 	this.playAgain = function() {
 		this.board = [ [0,0,0], [0,0,0], [0,0,0] ];
 		this.changeTurn("first");
 		this.currentPlayer = this.firstPlayer;
-		this.moves = 0;
-		this.winner = -1;
 	};
 
 	// Checks if a player as won the game
@@ -53,11 +48,11 @@ var TicTacToe = function() {
 
 			if (equal && board[i].indexOf(1) != -1) {
 				this.pointsX += 1;
-    		return this.winner = 1;
+    		return 1;
 
     	} else if (equal && board[i].indexOf(2) != -1) {
 				this.pointsO += 1;
-    		return this.winner = 2;
+    		return 2;
 	    }
 		}
 
@@ -67,11 +62,11 @@ var TicTacToe = function() {
 	    if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
 	      if (board[0][i] == 1) {
 					this.pointsX += 1;
-	      	return this.winner = 1;
+	      	return 1;
 
 	      } else if (board[0][i] == 2) {
 					this.pointsO += 1;
-	      	return this.winner = 2;
+	      	return 2;
 	      }
 	    }
 	  }
@@ -82,38 +77,57 @@ var TicTacToe = function() {
 
 	    if (board[1][1] == 1) {
 				this.pointsX += 1;
-	    	return this.winner = 1;
+	    	return 1;
 
 	      } else if (board[1][1] == 2) {
 					this.pointsO += 1;
-	      	return this.winner = 2;
+	      	return 2;
 	      }
 	  }
 
-	  this.moves += 1;
-
-	  if (this.moves == 9 && this.winner == -1) {
-			return this.winner = 0;
+		// Flat array and check for tie (no empty cells)
+		var flat = board.reduce( (a, b) => a.concat(b) );
+	  if (flat.indexOf(0) == -1) {
+			return 0;
 		}
+
+		// Return -1 (no winner yet) otherwise;
+		return -1;
+
 	};
 };
 
-var game;
+var game,
+	aiPlayer,
+	aiStarts;
 
 $(document).ready(function($) {
 
-	// When user clicks on the button, open the modal
-	$("#myBtn").click(function() {
-	  $("#finishModal").css("display", "block");
+	$( 'input:radio[name=game]' ).change( function() {
+
+		if ( this.value == "1player" ) {
+			$("#p2").text("Human plays with...");
+
+		} else {
+			$("#p2").text("Player 1 plays with...");
+		}
 	});
 
 
 	// START GAME
 	$(".btnStart").click(function() {
-		//game = JSON.parse(JSON.stringify(TicTacToe));
 		game = new TicTacToe();
 		start();
 		updatePoints();
+		highligthTurn();
+
+		aiPlayer = $('[value="circle"]').is(':checked') ? 1 : 2;
+		aiStarts = game.firstPlayer == aiPlayer ? true : false;
+
+		if ($('[value="1player"]').is(':checked')) {
+			ai();
+		}
+
 		$("#gameModal").css("display", "none");
 	});
 
@@ -121,6 +135,12 @@ $(document).ready(function($) {
 	// PLAY AGAIN: When user clicks "Play again", new game starts
 	$(".btnPlayAgain").click(function() {
 		playAgain();
+
+	//
+	if ($('[value="1player"]').is(':checked')) {
+		ai();
+	}
+
 		$("#finishModal").css("display", "none");
 	});
 
@@ -135,6 +155,7 @@ $(document).ready(function($) {
 
 	// For every square, if empty, do move, print symbol and check for winner
 	$("[class^='square']").each(function() {
+
 		var square = $(this);
 
 		square.click(function() {
@@ -142,28 +163,43 @@ $(document).ready(function($) {
 			if (square.text() == "") {
 				printSymbol(square);
 				move(square.attr('class'));
-				endGame(game.winner);
+				endGame(game.checkGame(game.board));
 
+				// If 1 player game is selected, call AI
+				if ($('[value="1player"]').is(':checked')) {
+					ai();
+				}
+
+				// Add changing-color animation
+				var squareClass = square.attr( 'class' );
+				$("." + squareClass).addClass( "animateSquare" );
+				setTimeout(function () {
+					$("." + squareClass).removeClass( "animateSquare" );
+				}, 1500);
 			}
+
+			highligthTurn();
+
 		});
-	})
-
-	/* !!! Agregar acá la decoracion para turno
-		$("#scoreP2, #player2, #symbolP2").each(function() {
-			$(this).css("background-color", )
-		});
-
-	*/
-
+	});
 });
 
-function start() {
-	/*
-	if ($('[value="1player"]').is(':checked')) {
-		//Aca hago lo que necesito para jugar vs pc
+function highligthTurn() {
+
+	if (( $("#symbolP1").html() == "X" && game.currentPlayer == 1 ) ||
+			( $("#symbolP1").html() == "O" && game.currentPlayer == 2 )) {
+		$("#player1, #symbolP1, #scoreP1").addClass( "turnHighlight" );
+		$("#player2, #symbolP2, #scoreP2").removeClass( "turnHighlight" );
+
+	} else {
+		$("#player2, #symbolP2, #scoreP2").addClass( "turnHighlight" );
+		$("#player1, #symbolP1, #scoreP1").removeClass( "turnHighlight" );
 	}
-	*/
-	if ($('[value="square"]').is(':checked')) {
+}
+
+function start() {
+
+	if ($('[value="circle"]').is(':checked')) {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
 	} else {
@@ -207,9 +243,9 @@ function move(square) {
 function printSymbol(square) {
 
 	if (game.currentPlayer == 1) {
-		square.html("X").fadeIn(600);
+		square.html("X");
 	} else {
-		square.html("O").fadeIn(600);
+		square.html("O");
 	}
 };
 
@@ -259,7 +295,93 @@ function endGame(player) {
   }
 };
 
-/*
-BUGS:
--Cuando juega P1 con X, desp reset y juega con O, desp reset y juega con X otra vez, no cambia.
-*/
+var state;
+
+function ai() {
+  state = $.extend(true, {}, game);
+  var board = state.board;
+  var myMove = state.currentPlayer == aiPlayer ? true : false;
+
+  if (myMove) {
+    makeMove();
+  }
+
+  function makeMove() {
+    board = minimaxMove(board);
+		aiClick(state.board, board);
+    myMove = false;
+  }
+
+  function minimaxMove(board) {
+    numNodes = 0;
+		var player = state.currentPlayer == aiPlayer ? true : false;
+		return recurseMinimax(board, player)[1];
+  }
+
+  var numNodes = 0;
+
+  function recurseMinimax(board, player) {
+    numNodes++;
+		var winner = state.checkGame(board);
+
+		if (winner != -1) {
+      switch (winner) {
+        case aiPlayer:
+          // AI wins
+          return [1, board]
+				case 0:
+					// Tie
+					return [0, board];
+        default:
+          // opponent wins
+          return [-1, board]
+      }
+    } else {
+      // Next states
+      var nextVal = null;
+      var nextBoard = null;
+
+			// for every game cell
+      for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+					// if empty cell, make move in that cell
+          if (board[i][j] == 0) {
+            board[i][j] = player ? aiPlayer : aiPlayer == 1 ? 2 : 1; //!!!
+
+						// recursive function value for the other player
+            var value = recurseMinimax(board, !player)[0];
+            if ((player && (nextVal == null || value > nextVal)) ||
+							(!player && (nextVal == null || value < nextVal))) {
+              nextBoard = board.map(function(arr) {
+                return arr.slice();
+              });
+              nextVal = value;
+            }
+            board[i][j] = 0;
+          }
+        }
+      }
+      return [nextVal, nextBoard];
+    }
+  }
+}
+
+function aiClick(board, moveBoard) {
+
+	// Returns the index of the element added by AI
+	function arrayDiff(a, b) {
+	  // Flat the arrays
+	  var a = a.reduce( (a, b) => a.concat(b) );
+	  var b = b.reduce( (a, b) => a.concat(b) );
+
+	  for (var i = 0; i < a.length; i++) {
+	    if (a[i] != b[i]) {
+				return i;
+	    }
+	  }
+	};
+	setTimeout(function() {
+		$(".square" + (arrayDiff(moveBoard, board) + 1)).click();
+	}, 500);
+
+};

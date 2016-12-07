@@ -41,6 +41,7 @@
 }
 
 body {
+  background-image: url("background.png");
 	background-color: #302010;
 	padding-top: 25px;
 }
@@ -53,6 +54,8 @@ body {
 
 h1 {
 	color: #5c832f;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 4em;
 }
 
 /* Score */
@@ -110,6 +113,11 @@ h1 {
 	border-radius: 5px 0 0 5px;
 }
 
+/* Player stats' cell */
+.turnHighlight {
+  background-color: rgba( 255, 255, 255, 0.2 );
+}
+
 
 
 /*------------------------------------*\
@@ -153,6 +161,10 @@ h1 {
 
 [class^="square"]:hover {
 	background-color: rgba( 255, 255, 255, 0.2 );
+}
+
+.animateSquare {
+  animation: colorChange 0.5s ease-in;
 }
 
 .square1 {
@@ -373,6 +385,11 @@ button:hover {
     opacity: 1;
     transform: scale( 1 ) translate3d( 0, 0, 0 );
   }
+}
+
+@keyframes colorChange {
+    from {color: rgba( 255, 255, 255, 0.1 );}
+    to {color: #d8caa8;}
 }
 
 
