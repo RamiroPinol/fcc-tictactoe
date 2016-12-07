@@ -97,13 +97,20 @@ var TicTacToe = function() {
 	};
 };
 
-var game;
+var game,
+	aiPlayer,
+	aiStarts;
 
 $(document).ready(function($) {
 
-	// When user clicks on the button, open the modal
-	$("#myBtn").click(function() {
-	  $("#finishModal").css("display", "block");
+	$( 'input:radio[name=game]' ).change( function() {
+
+		if ( this.value == "1player" ) {
+			$("#p2").text("Human plays with...");
+
+		} else {
+			$("#p2").text("Player 1 plays with...");
+		}
 	});
 
 
@@ -113,6 +120,14 @@ $(document).ready(function($) {
 		start();
 		updatePoints();
 		highligthTurn();
+
+		aiPlayer = $('[value="circle"]').is(':checked') ? 1 : 2;
+		aiStarts = game.firstPlayer == aiPlayer ? true : false;
+
+		if ($('[value="1player"]').is(':checked')) {
+			ai();
+		}
+
 		$("#gameModal").css("display", "none");
 	});
 
@@ -120,6 +135,12 @@ $(document).ready(function($) {
 	// PLAY AGAIN: When user clicks "Play again", new game starts
 	$(".btnPlayAgain").click(function() {
 		playAgain();
+
+	//
+	if ($('[value="1player"]').is(':checked')) {
+		ai();
+	}
+
 		$("#finishModal").css("display", "none");
 	});
 
@@ -178,7 +199,7 @@ function highligthTurn() {
 
 function start() {
 
-	if ($('[value="square"]').is(':checked')) {
+	if ($('[value="circle"]').is(':checked')) {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
 	} else {
@@ -279,7 +300,7 @@ var state;
 function ai() {
   state = $.extend(true, {}, game);
   var board = state.board;
-  var myMove = state.currentPlayer == 2 ? true : false;
+  var myMove = state.currentPlayer == aiPlayer ? true : false;
 
   if (myMove) {
     makeMove();
@@ -293,7 +314,7 @@ function ai() {
 
   function minimaxMove(board) {
     numNodes = 0;
-		var player = state.currentPlayer == 2 ? true : false;
+		var player = state.currentPlayer == aiPlayer ? true : false;
 		return recurseMinimax(board, player)[1];
   }
 
@@ -305,15 +326,15 @@ function ai() {
 
 		if (winner != -1) {
       switch (winner) {
-        case 2:
+        case aiPlayer:
           // AI wins
           return [1, board]
-        case 1:
+				case 0:
+					// Tie
+					return [0, board];
+        default:
           // opponent wins
           return [-1, board]
-        case 0:
-          // Tie
-          return [0, board];
       }
     } else {
       // Next states
@@ -325,7 +346,7 @@ function ai() {
         for (var j = 0; j < 3; j++) {
 					// if empty cell, make move in that cell
           if (board[i][j] == 0) {
-            board[i][j] = player ? 2 : 1;
+            board[i][j] = player ? aiPlayer : aiPlayer == 1 ? 2 : 1; //!!!
 
 						// recursive function value for the other player
             var value = recurseMinimax(board, !player)[0];
