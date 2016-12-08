@@ -199,6 +199,7 @@ function highligthTurn() {
 
 function start() {
 
+	// Put corresponding symbol for each player on points info
 	if ($('[value="circle"]').is(':checked')) {
 		$("#symbolP1").text("O");
 		$("#symbolP2").text("X");
@@ -206,6 +207,11 @@ function start() {
 		$("#symbolP1").text("X");
 		$("#symbolP2").text("O");
 	}
+
+	if ($('[value="1player"]').is(':checked')) {
+		$("#player2").text("CPU");
+	}
+
 }
 
 function move(square) {

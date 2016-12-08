@@ -55,7 +55,7 @@ body {
 h1 {
 	color: #5c832f;
   font-family: 'Permanent Marker', cursive;
-  font-size: 4em;
+  font-size: 3em;
 }
 
 /* Score */
@@ -74,6 +74,7 @@ h1 {
   border-left: 0;
   border-right: 0;
   padding: 10px 0;
+  width: 97px;
 }
 
 #stat-space {
@@ -398,9 +399,11 @@ button:hover {
   #RESPONSIVE DECLARATIONS
 \*------------------------------------*/
 
-@media only screen and ( min-width: 768px ) {
+@media only screen and ( min-width: 500px ) {
+  h1 { font-size: 4em; }
+}
 
-  body { padding-top: 50px; }
+@media only screen and ( min-width: 768px ) {
 
   #board {
     height: 460px;
